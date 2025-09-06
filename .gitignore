@@ -1,0 +1,8 @@
+# Ignore binary and disk image files
+*.bin
+*.img
+# Ignore files without extensions
+[^.]*
+
+# But keep hidden files like .gitignore, .env, etc.
+!.*
