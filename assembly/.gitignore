@@ -1,8 +1,10 @@
-# Ignore binary and disk image files
+# Ignore binaries
 *.bin
 *.img
-# Ignore files without extensions
-[^.]*
+*.o
 
-# But keep hidden files like .gitignore, .env, etc.
-!.*
+# Ignore files with no extension
+*       # ignore all
+!*.*    # except files with a dot (so .asm, .sh, .md, etc. are kept)
+!.gitignore
+target/*
