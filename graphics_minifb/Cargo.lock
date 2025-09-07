@@ -197,7 +197,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "graphics_exploration"
+name = "graphics_minifb"
 version = "0.1.0"
 dependencies = [
  "minifb",

@@ -7,3 +7,5 @@
 *       # ignore all
 !*.*    # except files with a dot (so .asm, .sh, .md, etc. are kept)
 !.gitignore
+*/target/*
+*/.DS_Store
