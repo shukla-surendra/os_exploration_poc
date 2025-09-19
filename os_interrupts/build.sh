@@ -17,7 +17,7 @@ cargo build \
     -Z build-std-features=compiler-builtins-mem
 
 # Check if build succeeded
-if [ ! -f "target/x86_64-unknown-none/release/rust_interrupt_test" ]; then
+if [ ! -f "target/x86_64-unknown-none/release/rust_interrupts" ]; then
     echo "❌ Build failed - kernel binary not found"
     exit 1
 fi
@@ -26,7 +26,7 @@ fi
 mkdir -p iso/boot/grub
 
 # Copy kernel to ISO directory
-cp target/x86_64-unknown-none/release/rust_interrupt_test iso/boot/kernel.bin
+cp target/x86_64-unknown-none/release/rust_interrupts iso/boot/kernel.bin
 
 echo "✓ Kernel binary copied"
 
@@ -34,7 +34,12 @@ echo "✓ Kernel binary copied"
 cat > iso/boot/grub/grub.cfg << 'EOF'
 set timeout=0
 set default=0
-
+insmod all_video
+insmod gfxterm
+insmod vbe
+set gfxmode=1024x768x32
+set gfxpayload=keep
+terminal_output gfxterm
 menuentry "Rust OS Interrupt Test" {
     multiboot2 /boot/kernel.bin
     boot

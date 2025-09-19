@@ -2,28 +2,26 @@ ENTRY(_start)
 
 SECTIONS
 {
-    . = 1M;
+    . = 1M; /* load at 1MiB */
 
-    .boot :
-    {
-        /* ensure that the multiboot header is at the beginning */
-        *(.multiboot_header)
+    .multiboot : ALIGN(8) {
+        KEEP(*(.multiboot2_header))
     }
 
-    .text :
-    {
-        *(.text)
+    .text : ALIGN(4K) {
+        *(.text .text.*)
     }
 
-    .rodata : {
-        *(.rodata)
+    .rodata : ALIGN(4K) {
+        *(.rodata .rodata.*)
     }
 
-    .data : {
-        *(.data)
+    .data : ALIGN(4K) {
+        *(.data .data.*)
     }
 
-    .bss : {
-        *(.bss)
+    .bss : ALIGN(4K) {
+        *(.bss .bss.*)
+        *(COMMON)
     }
 }
