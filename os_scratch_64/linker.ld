@@ -2,10 +2,10 @@ ENTRY(_start)
 
 SECTIONS
 {
-  . = 1M;
+  . = 1M; /* load at 1MiB */
 
   .multiboot : ALIGN(8) {
-    KEEP(*(.multiboot2))
+    KEEP(*(.multiboot .multiboot2_header))
   }
 
   .text : ALIGN(4K) {
