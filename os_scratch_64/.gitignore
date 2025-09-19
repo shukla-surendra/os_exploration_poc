@@ -1,0 +1,19 @@
+/target
+# OS DEVELOPMENT
+*.iso
+*.bin
+*.img
+*.elf
+*.efi
+*.fd
+*.iso
+*.bin
+*.img
+*.elf
+# MACOS
+.DS_Store
+os_iso_build/*
+OxideOS.iso
+mnt
+os_iso_configuration/*
+iso_builds/*

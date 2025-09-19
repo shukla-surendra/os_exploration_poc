@@ -1,0 +1,10 @@
+[build]
+target = "x86_64-unknow-none.json"
+
+[target.x86_64-unknow-none]
+rustflags = [
+  "-C", "link-arg=-Tlinker.ld",
+]
+
+[unstable]
+build-std = ["core", "compiler_builtins", "alloc"]
