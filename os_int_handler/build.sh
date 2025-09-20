@@ -14,10 +14,10 @@ cargo build \
     --target x86_64-unknown-none.json \
     --release \
     -Z build-std=core,alloc \
-    -Z build-std-features=compiler-builtins-mem
+    -Z build-std-features=compiler-builtins-mem 2>&1 | tee build.log
 
 # Check if build succeeded
-if [ ! -f "target/x86_64-unknown-none/release/os_int_handler" ]; then
+if [ ! -f "target/x86_64-unknown-none/release/rust_interrupts" ]; then
     echo "❌ Build failed - kernel binary not found"
     exit 1
 fi
@@ -26,7 +26,7 @@ fi
 mkdir -p iso/boot/grub
 
 # Copy kernel to ISO directory
-cp target/x86_64-unknown-none/release/os_int_handler iso/boot/kernel.bin
+cp target/x86_64-unknown-none/release/rust_interrupts iso/boot/kernel.bin
 
 echo "✅ Kernel binary copied"
 
@@ -73,7 +73,7 @@ echo "  qemu-system-x86_64 -cdrom rust_os.iso -serial stdio"
 echo ""
 echo "🐛 Run with debugging + serial logging:"
 echo "  qemu-system-x86_64 -cdrom rust_os.iso -serial file:kernel.log -s -S"
-echo "  gdb target/x86_64-unknown-none/release/os_int_handler"
+echo "  gdb target/x86_64-unknown-none/release/rust_interrupts"
 echo "  (gdb) target remote :1234"
 echo ""
 echo "🔍 Quick test with logging:"

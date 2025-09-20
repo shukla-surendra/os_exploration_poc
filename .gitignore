@@ -21,7 +21,7 @@ iso_builds/*
 *.bin
 *.img
 *.o
-
+*.log
 # Ignore files with no extension
 *       # ignore all
 !*.*    # except files with a dot (so .asm, .sh, .md, etc. are kept)

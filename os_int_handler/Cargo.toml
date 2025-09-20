@@ -1,11 +1,11 @@
 [package]
-name = "os_int_handler"
+name = "rust_interrupts"
 version = "0.1.0"
 edition = "2024"
 
 # This is a binary, not a library
 [[bin]]
-name = "os_int_handler"
+name = "rust_interrupts"
 path = "src/main.rs"
 
 # No external dependencies - pure from scratch
