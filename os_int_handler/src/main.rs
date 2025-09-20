@@ -181,17 +181,21 @@ unsafe fn inb(port: u16) -> u8 {
 
 // Minimal interrupt setup
 unsafe fn init_minimal_interrupts() {
-    SERIAL_PORT.write_str("=== MINIMAL INTERRUPT SETUP ===\n");
-    
-    // Set ALL entries to fault handler first
-    for i in 0..256 {
-        IDT[i].set_handler(fault_handler);
+    unsafe{
+
+        SERIAL_PORT.write_str("=== MINIMAL INTERRUPT SETUP ===\n");
+        // Set ALL entries to fault handler first
+        for i in 0..256 {
+            IDT[i].set_handler(fault_handler);
+        }
+        SERIAL_PORT.write_str("All IDT entries set to fault handler\n");
+        
+        // Set timer to our simple handler
+        IDT[32].set_handler(disable_timer_handler); // This will disable itself
+        SERIAL_PORT.write_str("Timer handler set (will self-disable)\n");
+
     }
-    SERIAL_PORT.write_str("All IDT entries set to fault handler\n");
-    
-    // Set timer to our simple handler
-    IDT[32].set_handler(disable_timer_handler); // This will disable itself
-    SERIAL_PORT.write_str("Timer handler set (will self-disable)\n");
+
     
     // Load IDT
     let idt_descriptor = IdtDescriptor {
@@ -200,42 +204,49 @@ unsafe fn init_minimal_interrupts() {
     };
     
     asm!("lidt [{}]", in(reg) &idt_descriptor, options(nostack));
-    SERIAL_PORT.write_str("IDT loaded\n");
+    unsafe {
+        SERIAL_PORT.write_str("IDT loaded\n");
     
-    // Initialize PIC very conservatively
-    init_minimal_pic();
-    
-    SERIAL_PORT.write_str("About to enable interrupts (minimal)...\n");
-    
-    // Enable interrupts
-    asm!("sti", options(nostack, nomem));
-    SERIAL_PORT.write_str("Interrupts enabled!\n");
-    SERIAL_PORT.write_str("Timer should fire once then disable itself...\n");
+        // Initialize PIC very conservatively
+        init_minimal_pic();
+        
+        SERIAL_PORT.write_str("About to enable interrupts (minimal)...\n");
+        
+        // Enable interrupts
+        asm!("sti", options(nostack, nomem));
+        SERIAL_PORT.write_str("Interrupts enabled!\n");
+        SERIAL_PORT.write_str("Timer should fire once then disable itself...\n");
+
+    }
+
 }
 
 // Ultra-conservative PIC init
 unsafe fn init_minimal_pic() {
-    SERIAL_PORT.write_str("Minimal PIC setup...\n");
-    
-    // Disable ALL interrupts first
-    outb(0x21, 0xFF);
-    outb(0xA1, 0xFF);
-    
-    // Reinitialize PIC
-    outb(0x20, 0x11); // ICW1
-    outb(0xA0, 0x11); // ICW1
-    outb(0x21, 32);   // ICW2 - master offset  
-    outb(0xA1, 40);   // ICW2 - slave offset
-    outb(0x21, 4);    // ICW3 - master
-    outb(0xA1, 2);    // ICW3 - slave
-    outb(0x21, 0x01); // ICW4 - master
-    outb(0xA1, 0x01); // ICW4 - slave
-    
-    // Enable ONLY timer (IRQ0) 
-    outb(0x21, 0xFE); // 11111110 - enable IRQ0 only
-    outb(0xA1, 0xFF); // Disable all slave interrupts
-    
-    SERIAL_PORT.write_str("PIC configured (timer only)\n");
+    unsafe{
+        SERIAL_PORT.write_str("Minimal PIC setup...\n");    
+        // Disable ALL interrupts first
+        outb(0x21, 0xFF);
+        outb(0xA1, 0xFF);
+        
+        // Reinitialize PIC
+        outb(0x20, 0x11); // ICW1
+        outb(0xA0, 0x11); // ICW1
+        outb(0x21, 32);   // ICW2 - master offset  
+        outb(0xA1, 40);   // ICW2 - slave offset
+        outb(0x21, 4);    // ICW3 - master
+        outb(0xA1, 2);    // ICW3 - slave
+        outb(0x21, 0x01); // ICW4 - master
+        outb(0xA1, 0x01); // ICW4 - slave
+        
+        // Enable ONLY timer (IRQ0) 
+        outb(0x21, 0xFE); // 11111110 - enable IRQ0 only
+        outb(0xA1, 0xFF); // Disable all slave interrupts
+        
+        SERIAL_PORT.write_str("PIC configured (timer only)\n");
+
+    }
+
 }
 
 
