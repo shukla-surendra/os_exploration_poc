@@ -1,7 +1,17 @@
 #![no_std]
 #![no_main]
 
-use core::panic::PanicInfo;
+// ============================================================================
+// MODULE DECLARATIONS - Core kernel modules
+// ============================================================================
+mod panic;              // panic handler
+mod kernel;             // Core kernel subsystems
+
+// ============================================================================
+// IMPORTS - Only what we need for early boot
+// ============================================================================
+use core::arch::asm;
+use kernel::serial::SERIAL_PORT;
 
 // Multiboot2 constants
 const MULTIBOOT2_MAGIC: u32 = 0xE85250D6;
@@ -67,9 +77,4 @@ pub static MULTIBOOT2_HEADER: MbHeader = MbHeader {
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
     loop {}
-}
-
-#[panic_handler]
-fn panic(_info: &PanicInfo) -> ! { 
-    loop {} 
 }
