@@ -28,7 +28,7 @@ mkdir -p iso/boot/grub
 # Copy kernel to ISO directory
 cp target/x86_64-unknown-none/release/rust_interrupts iso/boot/kernel.bin
 
-echo "✓ Kernel binary copied"
+echo "✅ Kernel binary copied"
 
 # Create GRUB configuration
 cat > iso/boot/grub/grub.cfg << 'EOF'
@@ -49,7 +49,7 @@ EOF
 # Create bootable ISO using grub-mkrescue
 if command -v grub-mkrescue &> /dev/null; then
     grub-mkrescue -o rust_os.iso iso/
-    echo "✓ Bootable ISO created: rust_os.iso"
+    echo "✅ Bootable ISO created: rust_os.iso"
 else
     echo "! grub-mkrescue not found. Install GRUB tools."
     echo "  Ubuntu/Debian: sudo apt install grub-pc-bin grub-common xorriso"
@@ -59,9 +59,22 @@ fi
 
 echo "Build complete!"
 echo ""
-echo "To run in QEMU:"
+echo "=== QEMU Run Commands ==="
+echo ""
+echo "🔧 Basic run:"
 echo "  qemu-system-x86_64 -cdrom rust_os.iso"
 echo ""
-echo "To run in QEMU with debugging:"
-echo "  qemu-system-x86_64 -cdrom rust_os.iso -s -S"
-echo "  Then connect GDB: target remote :1234"
+echo "📝 Run with serial logging to file:"
+echo "  qemu-system-x86_64 -cdrom rust_os.iso -serial file:kernel.log"
+echo "  tail -f kernel.log  # (in another terminal)"
+echo ""
+echo "🖥️  Run with serial output to terminal:"
+echo "  qemu-system-x86_64 -cdrom rust_os.iso -serial stdio"
+echo ""
+echo "🐛 Run with debugging + serial logging:"
+echo "  qemu-system-x86_64 -cdrom rust_os.iso -serial file:kernel.log -s -S"
+echo "  gdb target/x86_64-unknown-none/release/rust_interrupts"
+echo "  (gdb) target remote :1234"
+echo ""
+echo "🔍 Quick test with logging:"
+echo "  qemu-system-x86_64 -cdrom rust_os.iso -serial stdio"
