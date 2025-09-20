@@ -14,7 +14,8 @@ cargo build \
     --target x86_64-unknown-none.json \
     --release \
     -Z build-std=core,alloc \
-    -Z build-std-features=compiler-builtins-mem
+    -Z build-std-features=compiler-builtins-mem \
+    2>&1 | tee build.log
 
 # Check if build succeeded
 if [ ! -f "target/x86_64-unknown-none/release/os_scratch_64" ]; then
